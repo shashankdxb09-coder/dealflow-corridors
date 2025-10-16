@@ -1,0 +1,45 @@
+name: Update corridor data
+on:
+  schedule:
+    - cron: "0 6 5 * *"   # monthly on the 5th at 06:00 UTC
+  workflow_dispatch: {}    # manual run button
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install -r requirements.txt
+
+      # Optional: set a UN Comtrade API key as a repo secret for higher limits
+      - name: Export env
+        run: |
+          echo "UNCOMTRADE_API_KEY=${{ secrets.UNCOMTRADE_API_KEY }}" >> $GITHUB_ENV
+
+      - name: Build commodities (1970–2025)
+        run: |
+          python etl/build_all.py \
+            --start 1970 --end 2025 \
+            --corridors config/corridors.json \
+            --commodities config/commodities.json || true
+
+      # Publish to a stable 'latest' location your GPT will read from
+      - name: Publish latest CSVs
+        run: |
+          mkdir -p data/latest
+          if [ -f data_summary/commodities_corridors.csv ]; then mv data_summary/commodities_corridors.csv data/latest/; fi
+          if [ -f data_summary/remittances_corridors.csv ]; then mv data_summary/remittances_corridors.csv data/latest/; fi
+          if [ -f data_summary/migration_stock_corridors.csv ]; then mv data_summary/migration_stock_corridors.csv data/latest/; fi
+
+      - name: Commit updated CSVs
+        run: |
+          git config user.name "dfin-bot"
+          git config user.email "dfin@users.noreply.github.com"
+          git add data/latest/*.csv || true
+          git commit -m "auto: refresh data $(date -u +%F_%T)" || echo "no changes"
+          git push
