@@ -36,10 +36,24 @@ jobs:
           if [ -f data_summary/remittances_corridors.csv ]; then mv data_summary/remittances_corridors.csv data/latest/; fi
           if [ -f data_summary/migration_stock_corridors.csv ]; then mv data_summary/migration_stock_corridors.csv data/latest/; fi
 
-      - name: Commit updated CSVs
-        run: |
-          git config user.name "dfin-bot"
-          git config user.email "dfin@users.noreply.github.com"
-          git add data/latest/*.csv || true
-          git commit -m "auto: refresh data $(date -u +%F_%T)" || echo "no changes"
-          git push
+      - - name: Commit updated CSVs
+  shell: bash
+  run: |
+    set -e
+    git config user.name  "dfin-bot"
+    git config user.email "dfin@users.noreply.github.com"
+    git add -A data/latest || true
+
+    if git diff --cached --quiet; then
+      echo "No changes to commit."
+      exit 0
+    fi
+
+    git commit -m "auto: refresh data $(date -u +%F_%T)"
+
+    # Use the Actions token to authenticate pushes
+    git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+    # Rebase in case main moved, then push to the same branch we ran on
+    git pull --rebase origin ${{ github.ref_name }} || true
+    git push origin HEAD:${{ github.ref_name }}
