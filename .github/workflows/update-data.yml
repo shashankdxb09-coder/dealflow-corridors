@@ -1,8 +1,9 @@
 name: Update corridor data
+
 on:
+  workflow_dispatch: {}
   schedule:
     - cron: "0 6 5 * *"   # monthly on the 5th at 06:00 UTC
-  workflow_dispatch: {}    # manual run button
 
 permissions:
   contents: write
@@ -12,19 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-  with:
-    fetch-depth: 0
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - run: pip install -r requirements.txt
+      - name: Install deps
+        run: pip install -r requirements.txt
 
       # Optional: set a UN Comtrade API key as a repo secret for higher limits
       - name: Export env
-        run: |
-          echo "UNCOMTRADE_API_KEY=${{ secrets.UNCOMTRADE_API_KEY }}" >> $GITHUB_ENV
+        run: echo "UNCOMTRADE_API_KEY=${{ secrets.UNCOMTRADE_API_KEY }}" >> $GITHUB_ENV
 
       - name: Build commodities (1970–2025)
         run: |
@@ -33,33 +34,32 @@ jobs:
             --corridors config/corridors.json \
             --commodities config/commodities.json || true
 
-      # Publish to a stable 'latest' location your GPT will read from
       - name: Publish latest CSVs
         run: |
           mkdir -p data/latest
-          if [ -f data_summary/commodities_corridors.csv ]; then mv data_summary/commodities_corridors.csv data/latest/; fi
-          if [ -f data_summary/remittances_corridors.csv ]; then mv data_summary/remittances_corridors.csv data/latest/; fi
-          if [ -f data_summary/migration_stock_corridors.csv ]; then mv data_summary/migration_stock_corridors.csv data/latest/; fi
+          if [ -f data_summary/commodities_corridors.csv ]; then mv -f data_summary/commodities_corridors.csv data/latest/; fi
+          if [ -f data_summary/remittances_corridors.csv ]; then mv -f data_summary/remittances_corridors.csv data/latest/; fi
+          if [ -f data_summary/migration_stock_corridors.csv ]; then mv -f data_summary/migration_stock_corridors.csv data/latest/; fi
+          ls -l data/latest || true
 
-     - name: Commit updated CSVs
-  shell: bash
-  run: |
-    set -e
-    git config user.name  "dfin-bot"
-    git config user.email "dfin@users.noreply.github.com"
-    git add -A data/latest || true
+      - name: Commit updated CSVs
+        shell: bash
+        run: |
+          set -e
+          git config user.name  "dfin-bot"
+          git config user.email "dfin@users.noreply.github.com"
+          git add -A data/latest || true
 
-    if git diff --cached --quiet; then
-      echo "No changes to commit."
-      exit 0
-    fi
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
 
-    git commit -m "auto: refresh data $(date -u +%F_%T)"
+          git commit -m "auto: refresh data $(date -u +%F_%T)"
 
-    # Use the Actions token to authenticate pushes
-    git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          # Use the Actions token to authenticate pushes
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
-    # Rebase in case the branch moved, then push to the branch we ran on
-    git pull --rebase origin ${{ github.ref_name }} || true
-    git push origin HEAD:${{ github.ref_name }}
-
+          # Rebase in case the branch moved, then push to the branch we ran on
+          git pull --rebase origin ${{ github.ref_name }} || true
+          git push origin HEAD:${{ github.ref_name }}
