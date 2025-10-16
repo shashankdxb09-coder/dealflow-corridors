@@ -1,3 +1,5 @@
+# Documentation
+This folder will hold notes, source references, and GPT usage guides.
 
 # Deep Corridors ETL Bundle (1970–2025)
 **Scope:** 10 corridors (both directions) · Layers: Commodity (UN Comtrade) + Human (Remittances: KNOMAD; Migration: UN DESA).  
