@@ -4,11 +4,16 @@ on:
     - cron: "0 6 5 * *"   # monthly on the 5th at 06:00 UTC
   workflow_dispatch: {}    # manual run button
 
+permissions:
+  contents: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -36,7 +41,7 @@ jobs:
           if [ -f data_summary/remittances_corridors.csv ]; then mv data_summary/remittances_corridors.csv data/latest/; fi
           if [ -f data_summary/migration_stock_corridors.csv ]; then mv data_summary/migration_stock_corridors.csv data/latest/; fi
 
-      - - name: Commit updated CSVs
+     - name: Commit updated CSVs
   shell: bash
   run: |
     set -e
@@ -54,6 +59,7 @@ jobs:
     # Use the Actions token to authenticate pushes
     git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
-    # Rebase in case main moved, then push to the same branch we ran on
+    # Rebase in case the branch moved, then push to the branch we ran on
     git pull --rebase origin ${{ github.ref_name }} || true
     git push origin HEAD:${{ github.ref_name }}
+
