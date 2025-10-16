@@ -1,0 +1,18 @@
+{
+  "commodities": [
+    "crude_oil",
+    "refined_products",
+    "lng",
+    "gold",
+    "copper_refined",
+    "steel_flatrolled"
+  ],
+  "hs_codes": {
+    "crude_oil": "2709",
+    "refined_products": "2710",
+    "lng": "271111",
+    "gold": "7108",
+    "copper_refined": "7403",
+    "steel_flatrolled": "7208,7209,7210,7211,7212"
+  }
+}

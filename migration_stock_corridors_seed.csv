@@ -1,0 +1,2 @@
+year,origin_iso3,dest_iso3,corridor,metric,value,unit,source_id,trust_tier
+2020,IND,USA,IND->USA,migrant_stock,,persons,UN_DESA_MIG,A_official

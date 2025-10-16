@@ -1,0 +1,49 @@
+{
+  "time_span": {
+    "start_year": 1970,
+    "end_year": 2025
+  },
+  "corridors": [
+    "USA->ARE",
+    "ARE->USA",
+    "USA->IND",
+    "IND->USA",
+    "EUU->SAU",
+    "SAU->EUU",
+    "USA->CHN",
+    "CHN->USA",
+    "USA->JPN",
+    "JPN->USA",
+    "CHN->RUS",
+    "RUS->CHN",
+    "JPN->CHN",
+    "CHN->JPN",
+    "JPN->RUS",
+    "RUS->JPN",
+    "ARE->CHN",
+    "CHN->ARE",
+    "ARE->JPN",
+    "JPN->ARE"
+  ],
+  "commodities": [
+    "crude_oil",
+    "refined_products",
+    "lng",
+    "gold",
+    "copper_refined",
+    "steel_flatrolled"
+  ],
+  "hs_codes": {
+    "crude_oil": "2709",
+    "refined_products": "2710",
+    "lng": "271111",
+    "gold": "7108",
+    "copper_refined": "7403",
+    "steel_flatrolled": "7208,7209,7210,7211,7212"
+  },
+  "sources": {
+    "UNCOMTRADE": "https://comtradeapi.un.org",
+    "WORLD_BANK_KNOMAD": "https://www.worldbank.org/en/programs/knomad",
+    "UN_DESA_MIG": "https://www.un.org/development/desa/pd/content/international-migrant-stock"
+  }
+}

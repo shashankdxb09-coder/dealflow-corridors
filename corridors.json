@@ -1,0 +1,24 @@
+{
+  "corridors": [
+    "USA->ARE",
+    "ARE->USA",
+    "USA->IND",
+    "IND->USA",
+    "EUU->SAU",
+    "SAU->EUU",
+    "USA->CHN",
+    "CHN->USA",
+    "USA->JPN",
+    "JPN->USA",
+    "CHN->RUS",
+    "RUS->CHN",
+    "JPN->CHN",
+    "CHN->JPN",
+    "JPN->RUS",
+    "RUS->JPN",
+    "ARE->CHN",
+    "CHN->ARE",
+    "ARE->JPN",
+    "JPN->ARE"
+  ]
+}

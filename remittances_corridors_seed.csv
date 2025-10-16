@@ -1,0 +1,3 @@
+year,origin_iso3,dest_iso3,corridor,metric,value_usd,source_id,trust_tier
+2023,UNK,IND,UNK->IND,remittance_inflow_usd,110000000000,WORLD_BANK_KNOMAD,A_official
+2024,UNK,IND,UNK->IND,remittance_inflow_usd,129000000000,WORLD_BANK_KNOMAD,A_official
