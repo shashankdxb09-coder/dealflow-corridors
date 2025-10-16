@@ -1,3 +1,5 @@
+import os, sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import json, argparse, pandas as pd, os
 from etl.uncomtrade_fetch import fetch_bilateral_series, HS_LABELS
 from etl.knomad_remit_fetch import normalize_knomad
